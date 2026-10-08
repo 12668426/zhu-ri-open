@@ -86,8 +86,10 @@ function autoScrollCurrentSchedule(now,cur,next){
  const match=id=>rows.find(row=>row.dataset.row===id);
  const isToday=date=>date&&date.getFullYear()===now.getFullYear()&&date.getMonth()===now.getMonth()&&date.getDate()===now.getDate();
  const target=match(cur?.t.id)||(isToday(next?.start)?match(next.t.id):null)||rows[rows.length-1];
- const key=now.toDateString()+'|'+target.dataset.row;
+ const phase=cur?.t.id===target.dataset.row?'now':isToday(next?.start)&&next?.t.id===target.dataset.row?'next':'last';
+ const key=now.toDateString()+'|'+target.dataset.row+'|'+phase;
  if(key===lastScheduleScrollKey)return; // Don't override somebody who manually scrolled.
+ const initial=lastScheduleScrollKey==='';
  lastScheduleScrollKey=key;
  const sticky=sc.querySelector('thead')?.getBoundingClientRect().height||0;
  const rowRect=target.getBoundingClientRect(),scRect=sc.getBoundingClientRect();
@@ -95,7 +97,7 @@ function autoScrollCurrentSchedule(now,cur,next){
  const top=sc.scrollTop+rowRect.top-scRect.top-sticky-Math.max(8,(visible-rowRect.height)*0.35);
  const clamped=Math.max(0,Math.min(Math.max(0,sc.scrollHeight-sc.clientHeight),top));
  const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- sc.scrollTo({top:clamped,behavior:reduced?'auto':'smooth'});
+ sc.scrollTo({top:clamped,behavior:(initial||reduced)?'auto':'smooth'});
 }
 function render(){let page;switch(nav.view){case 'slot':page=renderSlot();break;case 'schedule-edit':page=scheduleForm();break;case 'settings':page=manageSchedule();break;case 'projects':page=renderProjects();break;case 'project':page=renderProject();break;case 'stage':page=renderStage();break;case 'project-edit':page=editProject();break;case 'stage-edit':page=editStage();break;case 'item-edit':page=editItem();break;default:page=renderSchedule()}
  el('panelHeading').innerHTML=page.h;el('panelContent').innerHTML=page.b;el('panelFooter').textContent=page.f;el('panelContent').scrollTop=0;if(nav.view!=='schedule')lastScheduleScrollKey='';renderPreviews();tick();}
