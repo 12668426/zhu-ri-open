@@ -1,7 +1,7 @@
 {
-  "name": "逐日 ZhuRi — 桌面计划时间管理",
+  "name": "逐日 ZhuRi — 交互式桌面壁纸",
   "short_name": "逐日",
-  "description": "本地优先的桌面计划时间管理工具",
+  "description": "可交互的 macOS 桌面壁纸：日程、倒计时、任务与桌面留白",
   "lang": "zh-CN",
   "start_url": "./",
   "scope": "./",
