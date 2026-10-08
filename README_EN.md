@@ -2,12 +2,11 @@
 
 **Turn your daily schedule into a wallpaper you can interact with.**
 
-### Try it in your browser first
+### ▶ [Try ZhuRi online — no installation required](https://12668426.github.io/zhu-ri-open/)
 
-**[▶ Open ZhuRi's web preview — no setup required](https://raw.githack.com/12668426/zhu-ri-open/%E4%B8%BB%E8%A6%81%E7%9A%84/index.html)**
+Open the interactive web version immediately—no account, download, or deployment needed. If you use [Plash](https://sindresorhus.com/plash), add this same URL as a desktop wallpaper without hosting your own site. For offline use or your own site URL, see the [Mac installation](docs/01-mac-local.md) or [GitHub Pages guide](docs/02-github-pages.md).
 
-This is a third-party, temporary source-code preview; it may show a confirmation screen. Use it to explore the interface, **not to store sensitive or long-term personal schedules**. For regular use, follow the [Mac local installation](docs/01-mac-local.md) or [deploy on your own GitHub Pages](docs/02-github-pages.md) guides.
-
+Your schedules and checklists are stored in your browser, not shared with other visitors. Export a JSON backup before clearing site data or moving to a different browser/device.
 
 ZhuRi is a free, open-source **interactive desktop wallpaper** for macOS. It brings your schedule, current activity, live countdown, upcoming tasks and progress onto your desktop background instead of hiding them inside another app window.
 
