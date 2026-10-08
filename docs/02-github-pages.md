@@ -1,6 +1,6 @@
-# 教程②：把逐日部署到**你自己的 GitHub 账号**（新手版）
+# 教程②：在自己的 GitHub 上发布逐日桌面壁纸（新手版）
 
-这个教程最重要的一点：**每个人都在自己的 GitHub 账号上部署自己的逐日网页。** 作者的 `12668426/zhu-ri-open` 只发布通用源代码，不存放你的计划，也不替你托管私人项目。
+你可以把逐日发布成**自己的壁纸网址**，再用 Plash 放到 Mac 桌面上。**每个人都在自己的 GitHub 账号上部署**；开源仓库 `12668426/zhu-ri-open` 用于提供源码，不是所有人共同编辑计划的地方。
 
 ## 先理解：Fork、仓库与 Pages
 
@@ -56,7 +56,7 @@ https://alice.github.io/my-desktop-planner/
 
 如果 Pages 显示 404，请等发布完成、检查 Branch/Folder 是否正确，确认仓库根目录有 `index.html`，再刷新；还可以去仓库 **Actions** 查看部署进度。
 
-## 第 5 步：让 Plash 显示你自己的网站
+## 第 5 步：用 Plash 将自己的网址设置为桌面壁纸
 
 1. 去 https://sindresorhus.com/plash ，通过官方 **Get** / Mac App Store 下载安装 **Plash**。
 2. 打开 Plash，点击顶部菜单栏图标，选 **Add Website**。
