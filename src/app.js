@@ -75,14 +75,36 @@ function renderStage(){const p=project(nav.id),s=stage(p,nav.stageId);if(!p||!s)
 function editProject(){const p=nav.id?project(nav.id):null;return {h:heading(p?'编辑计划':'新建计划','PROJECT EDITOR'),b:`<form class="content" id="projectForm"><label class="field">计划名称<input required name="title" maxlength="100" placeholder="例如：本月阅读计划" value="${esc(p?.title||'')}"></label><div class="flex-actions"><button class="button primary" type="submit">保存</button>${button('取消','back')}</div></form>`,f:'你可以创建任意数量的个性化计划'};}
 function editStage(){const p=project(nav.id),s=stage(p,nav.stageId);return {h:heading(s?'编辑阶段':'添加阶段','STAGE EDITOR'),b:`<form class="content" id="stageForm"><label class="field">阶段名称<input name="title" required maxlength="100" placeholder="例如：第一周" value="${esc(s?.title||'')}"></label><div class="flex-actions"><button class="button primary" type="submit">保存</button>${button('取消','back')}</div></form>`,f:'阶段内可以添加多个任务'};}
 function editItem(){return {h:heading('添加任务','TASK EDITOR'),b:`<form class="content" id="itemForm"><label class="field">任务名称<input name="title" required maxlength="200" placeholder="写下具体要完成的一件事"></label><div class="flex-actions"><button class="button primary" type="submit">添加任务</button>${button('取消','back')}</div></form>`,f:'可随时勾选完成状态'};}
+// The wallpaper scrolls only the schedule card, never the desktop or the whole page.
+// Reposition on first display, on returning to the schedule, and when the focused time block changes.
+let lastScheduleScrollKey='';
+function autoScrollCurrentSchedule(now,cur,next){
+ if(nav.view!=='schedule'||!state.started){lastScheduleScrollKey='';return;}
+ const sc=el('panelContent');
+ const rows=Array.from(sc.querySelectorAll('tbody tr[data-row]'));
+ if(!rows.length){lastScheduleScrollKey='';return;}
+ const match=id=>rows.find(row=>row.dataset.row===id);
+ const isToday=date=>date&&date.getFullYear()===now.getFullYear()&&date.getMonth()===now.getMonth()&&date.getDate()===now.getDate();
+ const target=match(cur?.t.id)||(isToday(next?.start)?match(next.t.id):null)||rows[rows.length-1];
+ const key=now.toDateString()+'|'+target.dataset.row;
+ if(key===lastScheduleScrollKey)return; // Don't override somebody who manually scrolled.
+ lastScheduleScrollKey=key;
+ const sticky=sc.querySelector('thead')?.getBoundingClientRect().height||0;
+ const rowRect=target.getBoundingClientRect(),scRect=sc.getBoundingClientRect();
+ const visible=Math.max(0,sc.clientHeight-sticky);
+ const top=sc.scrollTop+rowRect.top-scRect.top-sticky-Math.max(8,(visible-rowRect.height)*0.35);
+ const clamped=Math.max(0,Math.min(Math.max(0,sc.scrollHeight-sc.clientHeight),top));
+ const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ sc.scrollTo({top:clamped,behavior:reduced?'auto':'smooth'});
+}
 function render(){let page;switch(nav.view){case 'slot':page=renderSlot();break;case 'schedule-edit':page=scheduleForm();break;case 'settings':page=manageSchedule();break;case 'projects':page=renderProjects();break;case 'project':page=renderProject();break;case 'stage':page=renderStage();break;case 'project-edit':page=editProject();break;case 'stage-edit':page=editStage();break;case 'item-edit':page=editItem();break;default:page=renderSchedule()}
- el('panelHeading').innerHTML=page.h;el('panelContent').innerHTML=page.b;el('panelFooter').textContent=page.f;el('panelContent').scrollTop=0;renderPreviews();tick();}
+ el('panelHeading').innerHTML=page.h;el('panelContent').innerHTML=page.b;el('panelFooter').textContent=page.f;el('panelContent').scrollTop=0;if(nav.view!=='schedule')lastScheduleScrollKey='';renderPreviews();tick();}
 function renderPreviews(){let html=state.projects.slice(0,4).map(p=>`<button type="button" class="preview-card" data-project="${esc(p.id)}"><b>${esc(p.title)}</b><small>${completedCount(p)} / ${itemCount(p)} 项 · ${percent(p)}%</small><span class="mini-bar"><i style="width:${percent(p)}%"></i></span></button>`).join('');el('projectsPreview').innerHTML=html||'<div class="empty-preview">添加你的第一个计划，进度会显示在这里。</div>'}
 function tick(){let now=new Date();el('timeNow').textContent=`${fmt(now.getHours())}:${fmt(now.getMinutes())}`;el('seconds').textContent=fmt(now.getSeconds());let date=now.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});el('fullDate').textContent=date;el('todayText').textContent=date;el('greeting').textContent=now.getHours()<11?'开启清晰的一天':now.getHours()<18?'保持自己的节奏':'给今天一个好收尾';
  let {cur,next}=timeStatus(now);el('activeStatus').textContent=cur?'正在进行':'当前空闲';el('activeTitle').textContent=cur?.t.title||'当前没有计划安排';el('activeRange').textContent=cur?`${cur.t.start} — ${cur.t.end} · ${kindLabel(cur.t.type)}`:'可以安排休息，也可以添加时段';el('endTime').textContent=cur?.t.end||'—';
  let remaining=cur?Math.max(0,Math.ceil((cur.end-now)/1000)):0,elapsed=cur?Math.min(100,Math.max(0,Math.floor(100*(now-cur.start)/(cur.end-cur.start)))):0;
  let hour=Math.floor(remaining/3600),min=Math.floor(remaining%3600/60),sec=remaining%60;let text=cur?(hour?`${fmt(hour)}:${fmt(min)}:${fmt(sec)}`:`${fmt(min)}:${fmt(sec)}`):'--:--';el('countdown').textContent=text;el('countdown').classList.toggle('long',hour>0);el('elapsed').textContent=cur?'本段已进行':'时段进度';el('percent').textContent=elapsed+'%';el('elapsedBar').style.width=elapsed+'%';el('nowCard').dataset.urgency=remaining>0&&remaining<600?'urgent':remaining>=600&&remaining<=1800?'soon':'normal';el('nextTitle').textContent=next?`${next.start.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',hour12:false})} · ${next.t.title}`:'暂无后续时段';
- if(nav.view==='schedule'&&state.started){let rows=el('panelContent').querySelectorAll('[data-row]');rows.forEach(row=>row.classList.toggle('current',row.dataset.row===cur?.t.id));}
+ if(nav.view==='schedule'&&state.started){let rows=el('panelContent').querySelectorAll('[data-row]');rows.forEach(row=>row.classList.toggle('current',row.dataset.row===cur?.t.id));autoScrollCurrentSchedule(now,cur,next);}
 }
 function starterDemo(){state.schedule=[
  {id:uid(),start:'08:30',end:'09:00',title:'制定当天计划',type:'work',subject:'计划',projectId:'',days:[0,1,2,3,4,5,6]},
