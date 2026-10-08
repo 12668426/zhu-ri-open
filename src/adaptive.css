@@ -1,0 +1,80 @@
+/* Adaptive Mac desktop layouts. Container queries react to the actual width of
+   the planner, including the user's draggable icon-space reservation. */
+.workspace{container-type:inline-size;container-name:planner}
+.layout{min-width:0}
+.clock,.countdown{font-variant-numeric:tabular-nums}
+.table td,.table th{overflow-wrap:anywhere}
+@container planner (min-width:1100px){
+  .layout{grid-template-columns:minmax(290px,.78fr) minmax(500px,1.28fr);gap:20px}
+  .clock{font-size:clamp(72px,6vw,110px)}
+  .table{font-size:12px}
+  .table td{padding:10px 5px}
+}
+@container planner (max-width:1099px){
+  .layout{grid-template-columns:minmax(205px,.75fr) minmax(0,1.3fr);gap:12px}
+  .clock{font-size:clamp(52px,5.6vw,77px)}
+  .now-card{padding:14px;min-height:230px}
+  .timer-grid{flex-wrap:wrap}
+  .countdown{font-size:clamp(35px,4vw,55px)}
+  .countdown.long{font-size:clamp(28px,3.4vw,45px)}
+  .table{font-size:10px}
+  .table th{font-size:9px;padding:9px 1px}
+  .table td{padding:8px 2px}
+  .panel-heading{padding:12px;min-height:65px}
+  .panel-heading h2{font-size:17px}
+}
+@container planner (max-width:735px){
+  .layout{display:flex;flex-direction:column;gap:9px;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;min-height:0}
+  .overview{overflow:visible;display:grid;grid-template-columns:minmax(160px,.75fr) minmax(250px,1.25fr);align-items:start;gap:10px;flex:none}
+  .clockbox{grid-column:1;padding:10px 2px 0}
+  .now-card{grid-column:2;grid-row:1 / span 2;margin:0;min-height:220px}
+  .overview-heading{grid-column:1}
+  .projects-preview{grid-column:1 / -1;display:flex;gap:8px;overflow:hidden}
+  .preview-card{min-width:0;flex:1;min-height:74px;padding:9px}
+  .preview-card small{margin:6px 0}
+  .panel{flex:none;min-height:400px;height:min(55cqh,540px);border-radius:17px}
+  .panel-scroll{min-height:250px}
+  .clock{font-size:clamp(43px,5.5vw,68px)}
+  .clock small{font-size:12px}
+  .now-card h2{font-size:19px}
+  .countdown{font-size:clamp(31px,4.4vw,48px)}
+  .countdown.long{font-size:clamp(26px,3.6vw,38px)}
+  .desk-footer{display:none}
+}
+@container planner (max-width:510px){
+  .workspace{padding:12px 9px}
+  .topbar{height:auto;min-height:36px}
+  .brand-icon{width:30px;height:30px}
+  .brand strong{font-size:17px}
+  .brand small{font-size:7px}
+  .header-date{font-size:10px;text-align:right;white-space:normal}
+  .overview{display:flex;flex-direction:column;gap:8px}
+  .clockbox{padding:0}
+  .now-card{width:100%;min-height:auto;padding:12px}
+  .overview-heading{width:100%}
+  .projects-preview{width:100%}
+  .panel{min-height:400px;height:auto;flex:1}
+  .layout{overflow-y:auto}
+  .table{font-size:9.5px}
+  .table th,.table td{padding:8px 1px}
+  .panel-heading{gap:5px}
+  .heading-buttons{gap:4px}
+  .button{font-size:11px;padding:7px}
+}
+@media (max-height:770px) and (min-width:761px){
+  .workspace{padding-top:10px;padding-bottom:9px;gap:8px}
+  .topbar{height:34px}
+  .brand-icon{height:32px;width:32px}
+  .now-card{min-height:210px;padding:12px}
+  .clockbox{padding:0 4px}
+  .clock{font-size:clamp(48px,5vw,75px)}
+  .projects-preview .preview-card{min-height:80px;padding:10px}
+  .panel-heading{min-height:58px}
+}
+@media (max-width:760px){
+  .workspace{container-type:normal;min-height:100dvh;height:auto}
+  #desk{height:auto;min-height:100dvh;overflow:visible}
+  .layout{height:auto;min-height:0;overflow:visible}
+  .panel{min-height:460px;max-height:none;height:60dvh}
+  .panel-scroll{min-height:0}
+}

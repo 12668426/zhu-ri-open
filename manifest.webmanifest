@@ -1,0 +1,12 @@
+{
+  "name": "逐日 ZhuRi — 桌面计划时间管理",
+  "short_name": "逐日",
+  "description": "本地优先的桌面计划时间管理工具",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#092735",
+  "theme_color": "#287f73",
+  "icons": [{"src":"./assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]
+}
