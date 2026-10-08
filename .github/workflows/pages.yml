@@ -20,6 +20,14 @@ jobs:
     outputs:
       enabled: ${{ steps.check.outputs.enabled }}
     steps:
+      - name: Verify temporary browser preview
+        shell: bash
+        run: |
+          base="https://raw.githack.com/12668426/zhu-ri-open/%E4%B8%BB%E8%A6%81%E7%9A%84"
+          for part in index.html src/app.js src/style.css src/adaptive.css; do
+            status=$(curl --location --silent --show-error --output "$RUNNER_TEMP/preview-test" --write-out '%{http_code}' "$base/$part" || true)
+            echo "preview /$part: HTTP $status ($(wc -c < "$RUNNER_TEMP/preview-test") bytes)"
+          done
       - name: Check whether Pages is enabled
         id: check
         shell: bash
