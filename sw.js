@@ -1,5 +1,5 @@
 /* Basic offline shell for HTTPS-hosted ZhuRi. Plash behavior varies by version. */
-const CACHE='zhuri-shell-0.1.0';
+const CACHE='zhuri-shell-0.1.2';
 const CORE=['./','./index.html','./src/style.css','./src/adaptive.css','./src/app.js','./manifest.webmanifest','./assets/icon.svg'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
